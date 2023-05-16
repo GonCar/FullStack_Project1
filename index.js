@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 require("dotenv").config();
 const route = require('./routes/routes');
+const ejs = require('ejs');
+const { kStringMaxLength } = require('buffer');
 
 const path = require('path');
 
@@ -26,9 +28,16 @@ try {
 //midleware
 app.use(express.json());
 app.use('/api', route);
+app.set('view engine', 'ejs');
+const Album = require("./models/album");
+
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, '/index.html'));
+  Album.find({}, function(err, albums){
+    res.render('index', {
+      albumsList: albums
+    });
+  })
 });
 
 
